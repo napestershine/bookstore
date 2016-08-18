@@ -12,6 +12,6 @@ class BookController extends Controller
     {
         $book = Book::all();
 
-        return View::make('book_list')->with('books', $book);
+        return view('book_list')->with('books', $book);
     }
 }
