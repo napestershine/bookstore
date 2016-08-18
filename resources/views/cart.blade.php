@@ -1,66 +1,66 @@
 @extends('main_layout')
-
 @section('content')
-
     <div class="container" style="width:60%">
-        <h1>Your Cart</h1>
-        <table class="table">
-            <tbody>
-            <tr>
-                <td>
-                    <b>Title</b>
-                </td>
-                <td>
-                    <b>Amount</b>
-                </td>
-                <td>
-                    <b>Price</b>
-                </td>
-                <td>
-                    <b>Total</b>
-                </td>
-                <td>
-                    <b>Delete</b>
-                </td>
-            </tr>
-            @foreach($cart_books as $cart_item)
-                <tr>
-                    <td>{{$cart_item->Books->title}}</td>
-                    <td>
-                        {{$cart_item->amount}}
-                    </td>
-                    <td>
-                        {{$cart_item->Books->price}}
-                    </td>
-                    <td>
-                        {{$cart_item->total}}
-                    </td>
-                    <td>
-                        <a href="{{URL::route('delete_book_from_cart',array($cart_item->id))}}">Delete</a>
-                    </td>
-                </tr>
-            @endforeach
-            <tr>
-                <td>
-                </td>
-                <td>
-                </td>
-                <td>
-                    <b>Total</b>
-                </td>
-                <td>
-                    <b>{{$cart_total}}</b>
-                </td>
-                <td>
-                </td>
-            </tr>
-            </tbody>
-        </table>
-        <h1>Shipping</h1>
-        <form action="/order" method="post" accept-charset="UTF-8">
-            <label>Address</label>
-            <textarea class="span4" name="address" rows="5"></textarea>
-            <button class="btn btn-block btn-primary btn-large">Place order</button>
-        </form>
-    </div>
+        <h3>Your Orders</h3>
+        <div class="menu">
+            <div class="accordion">
+                @foreach($orders as $order)
+                    <div class="accordion-group">
+                        <div class="accordion-heading country">
+                            @if(Auth::user()->admin)
+                                <a class="accordion-toggle" data-toggle="collapse" href="#order{{$order->id}}">Order
+                                    #{{$order->id}} - {{$order->User->name}} - {{$order->created_at}}</a>
+                            @else
+                                <a class="accordion-toggle" data-toggle="collapse" href="#order{{$order->id}}">Order
+                                    #{{$order->id}} - {{$order->created_at}}</a>
+                            @endif
+                        </div>
+                        <div id="order{{$order->id}}" class="accordion-body collapse">
+                            <div class="accordion-inner">
+                                <table class="table table-striped table-condensed">
+                                    <thead>
+                                    <tr>
+                                        <th>
+                                            Title
+                                        </th>
+                                        <th>
+                                            Amount
+                                        </th>
+                                        <th>
+                                            Price
+                                        </th>
+                                        <th>
+                                            Total
+                                        </th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    @foreach($order->orderItems as $orderitem)
+                                        <tr>
+                                            <td>{{$orderitem->title}}</td>
+                                            <td>{{$orderitem->pivot->amount}}</td>
+                                            <td>{{$orderitem->pivot->price}}</td>
+                                            <td>{{$orderitem->pivot->total}}</td>
+                                        </tr>
+                                    @endforeach
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td><b>Total</b></td>
+                                        <td><b>{{$order->total}}</b></td>
+                                    </tr>
+                                    <tr>
+                                        <td><b>Shipping Address</b></td>
+                                        <td>{{$order->address}}</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
 @stop
